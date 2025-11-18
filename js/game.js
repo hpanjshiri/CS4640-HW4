@@ -16,6 +16,10 @@ let state = {
     }
 };
 
+function saveState() {
+    localStorage.setItem("anagramState", JSON.stringify(state));
+}
+
 if (localStorage.getItem("anagramState")) {
     state = JSON.parse(localStorage.getItem("anagramState"));
     renderStats();
@@ -45,6 +49,7 @@ function newGame(obj) {
     };
 
     renderGame();
+    saveState();
 }
 
 // render game helper
@@ -148,6 +153,7 @@ async function handleGuess(guess) {
     if (!validateLetters(guess)) {
         state.currentGame.guessedWrong++;
         renderGame();
+        saveState();
         return;
     }
 
@@ -163,6 +169,7 @@ async function handleGuess(guess) {
     }
 
     renderGame();
+    saveState();
 
     if (guess === state.currentGame.target) {
         endGame();
@@ -185,6 +192,7 @@ document.getElementById("newGameBtn").addEventListener("click", (e) => {
 document.getElementById("shuffleBtn").addEventListener("click", () => {
     state.currentGame.letters = shuffle(state.currentGame.letters);
     renderGame();
+    saveState();
 });
 
 document.getElementById("guessForm").addEventListener("submit", async (e) => {
@@ -197,6 +205,7 @@ document.getElementById("guessForm").addEventListener("submit", async (e) => {
     if (!validateLetters(guess)) {
         state.currentGame.guessedWrong++;
         renderGame();
+        saveState();
         return;
     }
 
@@ -212,6 +221,7 @@ document.getElementById("guessForm").addEventListener("submit", async (e) => {
     }
     
     renderGame();
+    saveState();
 
     // if (guess === state.currentGame.target) {
     //     endGame();
