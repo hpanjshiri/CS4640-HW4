@@ -176,55 +176,68 @@ async function handleGuess(guess) {
     }
 }
 
-// start game button
-document.getElementById("startGameBtn").addEventListener("click", (e) => {
-    e.preventDefault();
-    getRandomWord(newGame);
-});
-
-// new game button
-document.getElementById("newGameBtn").addEventListener("click", (e) => {
-    e.preventDefault();
-    getRandomWord(newGame);
-});
-
-// shuffle button
-document.getElementById("shuffleBtn").addEventListener("click", () => {
-    state.currentGame.letters = shuffle(state.currentGame.letters);
-    renderGame();
-    saveState();
-});
-
-document.getElementById("guessForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const guess = e.target.guess.value.trim().toUpperCase();
-    e.target.guess.value = "";
-
-    if (!guess) return;
-
-    if (!validateLetters(guess)) {
-        state.currentGame.guessedWrong++;
-        renderGame();
-        saveState();
-        return;
+window.addEventListener("DOMContentLoaded", () => { 
+    // start game button
+    const startGameBtn = document.getElementById("startGameBtn");
+    if (startGameBtn) {
+        startGameBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            getRandomWord(newGame);
+        });
     }
 
-    const result = await checkDictionaryWord(guess);
-
-    if (result.valid) {
-        if (!state.currentGame.guessedCorrect.includes(guess)) {
-            state.currentGame.guessedCorrect.push(guess);
-            state.currentGame.score += guess.length;
-        }
-    } else {
-        state.currentGame.guessedWrong++;
+    // new game button
+    const newGameBtn = document.getElementById("newGameBtn");
+    if (newGameBtn) {
+        newGameBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            getRandomWord(newGame);
+        });
     }
-    
-    renderGame();
-    saveState();
 
-    // if (guess === state.currentGame.target) {
-    //     endGame();
-    // }
+    // shuffle button
+    const shuffleBtn = document.getElementById("shuffleBtn");
+    if (shuffleBtn) {
+        shuffleBtn.addEventListener("click", () => {
+            state.currentGame.letters = shuffle(state.currentGame.letters);
+            renderGame();
+            saveState();
+        });
+    }
+
+    const guessForm = document.getElementById("guessForm");
+    if (guessForm) {
+        guessForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const guess = e.target.guess.value.trim().toUpperCase();
+            e.target.guess.value = "";
+
+            if (!guess) return;
+
+            if (!validateLetters(guess)) {
+                state.currentGame.guessedWrong++;
+                renderGame();
+                saveState();
+                return;
+            }
+
+            const result = await checkDictionaryWord(guess);
+
+            if (result.valid) {
+                if (!state.currentGame.guessedCorrect.includes(guess)) {
+                    state.currentGame.guessedCorrect.push(guess);
+                    state.currentGame.score += guess.length;
+                }
+            } else {
+                state.currentGame.guessedWrong++;
+            }
+            
+            renderGame();
+            saveState();
+
+            // if (guess === state.currentGame.target) {
+            //     endGame();
+            // }
+        });
+    }
 });
-
