@@ -176,6 +176,37 @@ async function handleGuess(guess) {
     }
 }
 
+function endGame() {
+    const g = state.currentGame;
+    const s = state.stats;
+
+    // update num of games played
+    s.gamesPlayed += 1;
+
+    // pdate totals for averages
+    s.totalCorrect += g.guessedCorrect.length;
+    s.totalIncorrect += g.guessedWrong;
+
+    // update highest/lowest scores
+    if (s.gamesPlayed === 1) {
+        s.highestScore = g.score;
+        s.lowestScore = g.score;
+    } else {
+        if (g.score > s.highestScore) {
+            s.highestScore = g.score;
+        }
+        if (g.score < s.lowestScore) {
+            s.lowestScore = g.score;
+        }
+    }
+
+    saveState();
+    renderStats();
+
+    alert(`You found the target word ${g.target}! Final score: ${g.score}`);
+}
+
+
 window.addEventListener("DOMContentLoaded", () => { 
     // start game button
     const startGameBtn = document.getElementById("startGameBtn");
@@ -235,9 +266,9 @@ window.addEventListener("DOMContentLoaded", () => {
             renderGame();
             saveState();
 
-            // if (guess === state.currentGame.target) {
-            //     endGame();
-            // }
+            if (guess === state.currentGame.target) {
+                endGame();
+            }
         });
         const saved = localStorage.getItem("anagramState");
         if (saved) {
