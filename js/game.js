@@ -157,7 +157,7 @@ async function handleGuess(guess) {
         return;
     }
 
-    let result = await checkDictionaryWord(guess);
+    let result = await checkDictionaryWord(guess.toLowerCase());
 
     if (result.valid) {
         if (!state.currentGame.guessedCorrect.includes(guess)) {
@@ -221,7 +221,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const result = await checkDictionaryWord(guess);
+            const result = await checkDictionaryWord(guess.toLowerCase());
 
             if (result.valid) {
                 if (!state.currentGame.guessedCorrect.includes(guess.toLowerCase())) {
