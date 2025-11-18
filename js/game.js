@@ -176,6 +176,25 @@ async function handleGuess(guess) {
     }
 }
 
+function endGame(){
+    const g = state.currentGame;
+    const s = state.stats;
+
+    s.gamesPlayed++;
+    s.totalCorrect += g.guessedCorrect.length;
+    s.totalIncorrect += g.guessedWrong;
+
+    if (s.highestScore < g.score) s.highestScore = g.score;
+    if (s.lowestScore === null || g.score < s.lowestScore) {
+        s.lowestScore = g.score;
+    }
+
+    saveState();
+    renderStats();
+
+    alert("Game over. You found the 7-letter word!")
+}
+
 window.addEventListener("DOMContentLoaded", () => { 
     // start game button
     const startGameBtn = document.getElementById("startGameBtn");
@@ -214,36 +233,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
             if (!guess) return;
 
-            if (!validateLetters(guess)) {
-                state.currentGame.guessedWrong++;
-                renderGame();
-                saveState();
-                return;
-            }
-
-            const result = await checkDictionaryWord(guess.toLowerCase());
-
-            if (result.valid) {
-                if (!state.currentGame.guessedCorrect.includes(guess.toLowerCase())) {
-                    state.currentGame.guessedCorrect.push(guess.toLowerCase());
-                    state.currentGame.score += guess.length;
-                }
-            } else {
-                state.currentGame.guessedWrong++;
-            }
-            
-            renderGame();
-            saveState();
-
-            // if (guess === state.currentGame.target) {
-            //     endGame();
-            // }
+            await handleGuess(guess);
         });
+
         const saved = localStorage.getItem("anagramState");
         if (saved) {
-            state = JSON.parse(saved);
+            const old = JSON.parse(saved);
+            state.stats = old.stats;
             renderStats();
-            renderGame();
         }
     }
 });
