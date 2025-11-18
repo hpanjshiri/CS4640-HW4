@@ -70,6 +70,28 @@ function renderGame() {
     }
 }
 
+// render game stats
+function renderStats() {
+    const stats = state.stats;
+
+    const gamesSpan = document.querySelector("#stat-games");
+    const highSpan = document.querySelector("#stat-high");
+    const lowSpan = document.querySelector("#stat-low");
+    const avgCorrectSpan = document.querySelector("#stat-avg-correct");
+    const avgIncorrectSpan = document.querySelector("#stat-avg-incorrect");
+
+    const games = stats.gamesPlayed || 0;
+    const totalCorrect = stats.totalCorrect || 0;
+    const totalIncorrect = stats.totalIncorrect || 0;
+
+    const avgCorrect = (games > 0) ? (totalCorrect / games).toFixed(2) : "0";
+    const avgIncorrect = (games > 0) ? (totalIncorrect / games).toFixed(2) : "0";
+
+    if (gamesSpan) gamesSpan.textContent = games;
+    if (highSpan) highSpan.textContent = stats.highestScore || 0;
+    if (lowSpan) lowSpan.textContent = (stats.lowestScore == null ? 0 : stats.lowestScore);
+    if (avgCorrectSpan) avgCorrectSpan.textContent = avgCorrect;
+    if (avgIncorrectSpan) avgIncorrectSpan.textContent = avgIncorrect;
 // function renderStats() {
 //     const s = state.stats;
 //     const statsDiv = document.querySelector(".stats");
@@ -80,7 +102,7 @@ function renderGame() {
 //     lines[2].textContent = `Lowest score: ${s.lowestScore ?? 0}`;
 //     lines[3].textContent = `Average correct words guessed per game: ${s.gamesPlayed ? (s.totalCorrect / s.gamesPlayed).toFixed(2) : 0}`;
 //     lines[4].textContent = `Average incorrect words guessed per game: ${s.gamesPlayed ? (s.totalIncorrect / s.gamesPlayed).toFixed(2) : 0}`;
-// }
+}
 
 async function checkDictionaryWord(word) {
     let response = await fetch(
