@@ -44,8 +44,28 @@ function newGame(obj) {
 
 // render game helper
 function renderGame() {
-    
+    // score
     document.querySelector("h2").textContent = 
-        `Score: ${state.currentGame.score}`
+        `Score: ${state.currentGame.score}`;
+
+    // letters
+    document.querySelector(".letters").textContent = 
+        `Letters: ${state.currentGam}`
     
+
+    // correct words list
+    const ul = document.querySelector(".panel ul");
+    ul.innerHTML = "";
+
+    // grouped words by length
+    const grouped = {};
+    for (let w in state.currentGame.guessedCorrect) {
+        const len = w.length;
+        if (!grouped[len]) grouped[len] = [];
+        grouped[len].push(w);
+    }
+
+    for (let len in grouped) {
+        ul.innerHTML += `<li><strong>${len}-letter words</strong>: ${grouped[len].join(", ")}</li>`;
+    }
 }
