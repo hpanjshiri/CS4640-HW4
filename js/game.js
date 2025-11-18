@@ -177,6 +177,8 @@ async function handleGuess(guess) {
 }
 
 function endGame() {
+    if (!state.currentGame.target) return;
+
     const g = state.currentGame;
     const s = state.stats;
 
@@ -200,10 +202,16 @@ function endGame() {
         }
     }
 
+    state.currentGame.target = "";
+
     saveState();
     renderStats();
 
-    alert(`You found the target word ${g.target}! Final score: ${g.score}`);
+    if (won) {
+        alert(`You found the target word ${g.target}! Final score: ${g.score}`);
+    } else {
+        alert(`Game ended. Final score: ${g.score}`);
+    }
 }
 
 
@@ -213,6 +221,9 @@ window.addEventListener("DOMContentLoaded", () => {
     if (startGameBtn) {
         startGameBtn.addEventListener("click", (e) => {
             e.preventDefault();
+            if (state.currentGame.target) {
+                endGame(false);
+            }
             getRandomWord(newGame);
         });
     }
@@ -222,6 +233,9 @@ window.addEventListener("DOMContentLoaded", () => {
     if (newGameBtn) {
         newGameBtn.addEventListener("click", (e) => {
             e.preventDefault();
+            if (state.currentGame.target) {
+                endGame(false);
+            }
             getRandomWord(newGame);
         });
     }
@@ -252,6 +266,18 @@ window.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            if (guess === state.currentGame.target) {
+                const stored = guess.toLowerCase();
+                if (!state.currentGame.guessedCorrect.includes(stored)) {
+                    state.currentGame.guessedCorrect.push(stored);
+                    state.currentGame.score += guess.length;
+                }
+                renderGame();
+                saveState();
+                endGame(true); 
+                return;       
+            }
+
             const result = await checkDictionaryWord(guess.toLowerCase());
 
             if (result.valid) {
@@ -265,10 +291,6 @@ window.addEventListener("DOMContentLoaded", () => {
             
             renderGame();
             saveState();
-
-            if (guess === state.currentGame.target) {
-                endGame();
-            }
         });
         const saved = localStorage.getItem("anagramState");
         if (saved) {
