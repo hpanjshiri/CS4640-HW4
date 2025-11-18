@@ -216,18 +216,6 @@ function endGame() {
 
 
 window.addEventListener("DOMContentLoaded", () => { 
-    // start game button
-    const startGameBtn = document.getElementById("startGameBtn");
-    if (startGameBtn) {
-        startGameBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (state.currentGame.target) {
-                endGame(false);
-            }
-            getRandomWord(newGame);
-        });
-    }
-
     // new game button
     const newGameBtn = document.getElementById("newGameBtn");
     if (newGameBtn) {
