@@ -58,38 +58,39 @@
 </head>
 
 <body>
-<h2>Score: 0</h2>
-<div class="letters"></div>
+    <button id="startGameBtn" type="button">Start Game</button>
+    <h2>Score: 0</h2>
+    <div class="letters"></div>
 
-<form id="guessForm">
-    <label>Enter a word using these letters:</label>
-    <input name="guess" autofocus>
-    <button type="submit">Submit Guess</button>
-</form>
+    <form id="guessForm">
+        <label>Enter a word using these letters:</label>
+        <input name="guess" autofocus>
+        <button type="submit">Submit Guess</button>
+    </form>
 
-<button id="shuffleBtn" type="button">Re-shuffle</button>
+    <button id="shuffleBtn" type="button">Re-shuffle</button>
 
-<a id="newGameBtn" href="#">New Game</a>
+    <button id="newGameBtn" type="button">New Game</button>
 
-<div class="row" style="margin-top:1rem;">
-    <div class="panel">
-        <strong>Valid words found: </strong>
-        <ul></ul>
+    <div class="row" style="margin-top:1rem;">
+        <div class="panel">
+            <strong>Valid words found: </strong>
+            <ul></ul>
+        </div>
+
+        <div class="panel stats">
+            <strong>Your stats</strong>
+            <small>Games played: </small>
+            <small>Highest score: </small>
+            <small>Lowest score: </small>
+            <small>Average correct words guessed per game: </small>
+            <small>Average incorrect words guessed per game: </small>
+        </div>
     </div>
 
-    <div class="panel stats">
-        <strong>Your stats</strong>
-        <small>Games played: </small>
-        <small>Highest score: </small>
-        <small>Lowest score: </small>
-        <small>Average correct words guessed per game: </small>
-        <small>Average incorrect words guessed per game: </small>
-    </div>
-</div>
-
-<p style="margin-top:1.5rem;">
-    Guessing the 7-letter target word will end the game (you win).
-</p>
+    <p style="margin-top:1.5rem;">
+        Guessing the 7-letter target word will end the game (you win).
+    </p>
 
 </body>
 <script src="js/anagrams.js"></script>
