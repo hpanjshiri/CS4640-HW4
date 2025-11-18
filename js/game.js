@@ -33,7 +33,7 @@ function newGame(obj) {
     // store JSON objs with new game attributes
     state.currentGame = {
         target: word,
-        letters: shuffle(word,split("")),
+        letters: shuffle(word.split("")),
         guessedCorrect: [],
         guessedWrong: 0,
         score: 0
@@ -50,7 +50,7 @@ function renderGame() {
 
     // letters
     document.querySelector(".letters").textContent = 
-        `Letters: ${state.currentGam}`
+        `Letters: ${state.currentGame}`
     
 
     // correct words list
