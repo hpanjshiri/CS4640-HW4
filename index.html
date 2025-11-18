@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Anagrams Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body{
+            font-family:system-ui,Arial;
+            margin:2rem;
+        }
+        header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:1rem;
+        }
+        .letters{
+            font-size:2.2rem;
+            letter-spacing:.4rem;
+            border:1px solid #ddd;
+            padding:1rem;
+            border-radius:8px;
+            display:inline-block;
+            margin:.5rem 0;
+        }
+        .row{
+            display:flex;
+            gap:2rem;
+            align-items:
+            flex-start;
+        }
+        .panel{
+            border:1px solid #ddd;
+            border-radius:8px;
+            padding:1rem;
+        }
+        ul{
+            margin:.4rem 0 0 1rem;
+        }
+        .msg{
+            color:#064;
+            margin:.5rem 0;
+        }
+        .err{
+            color:#a00;
+            margin:.5rem 0;
+        }
+        .stats small{
+            display:block;
+            color:#555;
+            margin-top:.2rem;
+        }
+    </style>
+</head>
+
+<body>
+<h2>Score: ></h2>
+<div class="letters"></div>
+
+<form method="post">
+    <label>Enter a word using these letters:</label>
+    <input name="guess" autofocus>
+    <button type="submit">Submit Guess</button>
+</form>
+
+<button type="submit">Re-shuffle</button>
+
+<a href="">New Game</a>
+
+<div class="row" style="margin-top:1rem;">
+    <div class="panel">
+        <strong>Valid words found: </strong>
+        <ul>
+            
+        </ul>
+    </div>
+
+    <div class="panel stats">
+        <strong>Your stats</strong>
+        <small>Games played: </small>
+        <small>Highest score: </small>
+        <small>Lowest score: </small>
+        <small>Average correct words guessed per game: </small>
+        <small>Average incorrect words guessed per game: </small>
+    </div>
+</div>
+
+<p style="margin-top:1.5rem;">
+    Guessing the 7-letter target word will end the game (you win).
+</p>
+
+</body>
+<script src="anagrams.js"></script>
+<script src="game.js"></script>
+</html>
