@@ -77,6 +77,26 @@ function renderGame() {
 
 // render game stats
 function renderStats() {
+    // const stats = state.stats;
+
+    // const gamesSpan = document.querySelector("#stat-games");
+    // const highSpan = document.querySelector("#stat-high");
+    // const lowSpan = document.querySelector("#stat-low");
+    // const avgCorrectSpan = document.querySelector("#stat-avg-correct");
+    // const avgIncorrectSpan = document.querySelector("#stat-avg-incorrect");
+
+    // const games = stats.gamesPlayed || 0;
+    // const totalCorrect = stats.totalCorrect || 0;
+    // const totalIncorrect = stats.totalIncorrect || 0;
+
+    // const avgCorrect = (games > 0) ? (totalCorrect / games).toFixed(2) : "0";
+    // const avgIncorrect = (games > 0) ? (totalIncorrect / games).toFixed(2) : "0";
+
+    // if (gamesSpan) gamesSpan.textContent = games;
+    // if (highSpan) highSpan.textContent = stats.highestScore || 0;
+    // if (lowSpan) lowSpan.textContent = (stats.lowestScore == null ? 0 : stats.lowestScore);
+    // if (avgCorrectSpan) avgCorrectSpan.textContent = avgCorrect;
+    // if (avgIncorrectSpan) avgIncorrectSpan.textContent = avgIncorrect;
     const stats = state.stats;
 
     const gamesSpan = document.querySelector("#stat-games");
@@ -97,16 +117,6 @@ function renderStats() {
     if (lowSpan) lowSpan.textContent = (stats.lowestScore == null ? 0 : stats.lowestScore);
     if (avgCorrectSpan) avgCorrectSpan.textContent = avgCorrect;
     if (avgIncorrectSpan) avgIncorrectSpan.textContent = avgIncorrect;
-// function renderStats() {
-//     const s = state.stats;
-//     const statsDiv = document.querySelector(".stats");
-
-//     let lines = statsDiv.querySelectorAll("small");
-//     lines[0].textContent = `Games played: ${s.gamesPlayed}`;
-//     lines[1].textContent = `Highest score: ${s.highestScore}`;
-//     lines[2].textContent = `Lowest score: ${s.lowestScore ?? 0}`;
-//     lines[3].textContent = `Average correct words guessed per game: ${s.gamesPlayed ? (s.totalCorrect / s.gamesPlayed).toFixed(2) : 0}`;
-//     lines[4].textContent = `Average incorrect words guessed per game: ${s.gamesPlayed ? (s.totalIncorrect / s.gamesPlayed).toFixed(2) : 0}`;
 }
 
 async function checkDictionaryWord(word) {
@@ -131,3 +141,72 @@ function validateLetters(guess) {
     }
     return true;
 }
+
+async function handleGuess(guess) {
+    guess = guess.toUpperCase();
+
+    if (!validateLetters(guess)) {
+        state.currentGame.guessedWrong++;
+        renderGame();
+        return;
+    }
+
+    let result = await checkDictionaryWord(guess);
+
+    if (result.valid) {
+        if (!state.currentGame.guessedCorrect.includes(guess)) {
+            state.currentGame.guessedCorrect.push(guess);
+            state.currentGame.score += guess.length;
+        }
+    } else {
+        state.currentGame.guessedWrong++;
+    }
+
+    renderGame();
+
+    if (guess === state.currentGame.target) {
+        endGame();
+    }
+}
+
+// new game button
+document.getElementById("newGameBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    getRandomWord(newGame);
+});
+
+document.getElementById("shuffleBtn").addEventListener("click", () => {
+    state.currentGame.letters = shuffle(state.currentGame.letters);
+    renderGame();
+});
+
+document.getElementById("guessForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const guess = e.target.guess.value.trim().toUpperCase();
+    e.target.guess.value = "";
+
+    if (!guess) return;
+
+    if (!validateLetters(guess)) {
+        state.currentGame.guessedWrong++;
+        renderGame();
+        return;
+    }
+
+    const result = await checkDictionaryWord(guess);
+
+    if (result.valid) {
+        if (!state.currentGame.guessedCorrect.includes(guess)) {
+            state.currentGame.guessedCorrect.push(guess);
+            state.currentGame.score += guess.length;
+        }
+    } else {
+        state.currentGame.guessedWrong++;
+    }
+    
+    renderGame();
+
+    if (guess === state.currentGame.target) {
+        endGame();
+    }
+});
