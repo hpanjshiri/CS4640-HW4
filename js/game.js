@@ -164,12 +164,19 @@ async function handleGuess(guess) {
     }
 }
 
+// start game button
+document.getElementById("startGameBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    getRandomWord(newGame);
+});
+
 // new game button
 document.getElementById("newGameBtn").addEventListener("click", (e) => {
     e.preventDefault();
     getRandomWord(newGame);
 });
 
+// shuffle button
 document.getElementById("shuffleBtn").addEventListener("click", () => {
     state.currentGame.letters = shuffle(state.currentGame.letters);
     renderGame();
