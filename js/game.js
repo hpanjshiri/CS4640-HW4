@@ -213,3 +213,26 @@ document.getElementById("guessForm").addEventListener("submit", async (e) => {
     // }
 });
 
+document.getElementById("clearHistoryBtn").addEventListener("click", () => {
+    state.stats = {
+        gamesPlayed: 0,
+        highestScore: 0,
+        lowestScore: null,
+        totalCorrect: 0,
+        totalIncorrect: 0
+    };
+
+    localStorage.removeItem("anagramState");
+    renderStats();
+    state.currentGame = {
+        target: "",
+        letters: [],
+        guessedCorrect: [],
+        guessedWrong: 0,
+        score: 0
+    };
+    renderGame();
+
+    alert("History Cleared");
+});
+
