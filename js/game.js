@@ -224,8 +224,8 @@ window.addEventListener("DOMContentLoaded", () => {
             const result = await checkDictionaryWord(guess);
 
             if (result.valid) {
-                if (!state.currentGame.guessedCorrect.includes(guess)) {
-                    state.currentGame.guessedCorrect.push(guess);
+                if (!state.currentGame.guessedCorrect.includes(guess.toLowerCase())) {
+                    state.currentGame.guessedCorrect.push(guess.toLowerCase());
                     state.currentGame.score += guess.length;
                 }
             } else {
@@ -239,5 +239,11 @@ window.addEventListener("DOMContentLoaded", () => {
             //     endGame();
             // }
         });
+        const saved = localStorage.getItem("anagramState");
+        if (saved) {
+            state = JSON.parse(saved);
+            renderStats();
+            renderGame();
+        }
     }
 });
