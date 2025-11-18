@@ -51,29 +51,30 @@
             color:#555;
             margin-top:.2rem;
         }
+        #shuffleBtn{
+            margin-left: .5rem;
+        }
     </style>
 </head>
 
 <body>
-<h2>Score: ></h2>
+<h2>Score: 0</h2>
 <div class="letters"></div>
 
-<form method="post">
+<form id="guessForm">
     <label>Enter a word using these letters:</label>
     <input name="guess" autofocus>
     <button type="submit">Submit Guess</button>
 </form>
 
-<button type="submit">Re-shuffle</button>
+<button id="shuffleBtn" type="submit">Re-shuffle</button>
 
-<a href="">New Game</a>
+<a id="newGameBtn" href="#">New Game</a>
 
 <div class="row" style="margin-top:1rem;">
     <div class="panel">
         <strong>Valid words found: </strong>
-        <ul>
-            
-        </ul>
+        <ul></ul>
     </div>
 
     <div class="panel stats">
