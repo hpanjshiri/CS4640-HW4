@@ -201,7 +201,8 @@ document.getElementById("guessForm").addEventListener("submit", async (e) => {
     
     renderGame();
 
-    if (guess === state.currentGame.target) {
-        endGame();
-    }
+    // if (guess === state.currentGame.target) {
+    //     endGame();
+    // }
 });
+
