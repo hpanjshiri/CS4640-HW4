@@ -33,7 +33,7 @@ function newGame(obj) {
     // store JSON objs with new game attributes
     state.currentGame = {
         target: word,
-        letters: shuffle(word,split("")),
+        letters: shuffle(word.split("")),
         guessedCorrect: [],
         guessedWrong: 0,
         score: 0
@@ -50,7 +50,7 @@ function renderGame() {
 
     // letters
     document.querySelector(".letters").textContent = 
-        `Letters: ${state.currentGam}`
+        state.currentGame.letters.join(" ");
     
 
     // correct words list
@@ -59,7 +59,7 @@ function renderGame() {
 
     // grouped words by length
     const grouped = {};
-    for (let w in state.currentGame.guessedCorrect) {
+    for (let w of state.currentGame.guessedCorrect) {
         const len = w.length;
         if (!grouped[len]) grouped[len] = [];
         grouped[len].push(w);
