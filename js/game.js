@@ -70,17 +70,17 @@ function renderGame() {
     }
 }
 
-function renderStats() {
-    const s = state.stats;
-    const statsDiv = document.querySelector(".stats");
+// function renderStats() {
+//     const s = state.stats;
+//     const statsDiv = document.querySelector(".stats");
 
-    let lines = statsDiv.querySelectorAll("small");
-    lines[0].textContent = `Games played: ${s.gamesPlayed}`;
-    lines[1].textContent = `Highest score: ${s.highestScore}`;
-    lines[2].textContent = `Lowest score: ${s.lowestScore ?? 0}`;
-    lines[3].textContent = `Average correct words guessed per game: ${s.gamesPlayed ? (s.totalCorrect / s.gamesPlayed).toFixed(2) : 0}`;
-    lines[4].textContent = `Average incorrect words guessed per game: ${s.gamesPlayed ? (s.totalIncorrect / s.gamesPlayed).toFixed(2) : 0}`;
-}
+//     let lines = statsDiv.querySelectorAll("small");
+//     lines[0].textContent = `Games played: ${s.gamesPlayed}`;
+//     lines[1].textContent = `Highest score: ${s.highestScore}`;
+//     lines[2].textContent = `Lowest score: ${s.lowestScore ?? 0}`;
+//     lines[3].textContent = `Average correct words guessed per game: ${s.gamesPlayed ? (s.totalCorrect / s.gamesPlayed).toFixed(2) : 0}`;
+//     lines[4].textContent = `Average incorrect words guessed per game: ${s.gamesPlayed ? (s.totalIncorrect / s.gamesPlayed).toFixed(2) : 0}`;
+// }
 
 async function checkDictionaryWord(word) {
     let response = await fetch(
