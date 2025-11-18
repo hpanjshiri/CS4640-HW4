@@ -23,7 +23,12 @@ if (localStorage.getItem("anagramState")) {
 
 // shuffle helper
 function shuffle(arr) {
-    return arr.sort(() => Math.random() - 0.5);
+    const copy = [...arr];
+    for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
 }
 
 // set up new game
@@ -50,7 +55,7 @@ function renderGame() {
 
     // letters
     document.querySelector(".letters").textContent = 
-        `Letters: ${state.currentGame}`
+        state.currentGame.letters.join(" ");
     
 
     // correct words list
@@ -59,7 +64,7 @@ function renderGame() {
 
     // grouped words by length
     const grouped = {};
-    for (let w in state.currentGame.guessedCorrect) {
+    for (let w of state.currentGame.guessedCorrect) {
         const len = w.length;
         if (!grouped[len]) grouped[len] = [];
         grouped[len].push(w);
@@ -92,4 +97,37 @@ function renderStats() {
     if (lowSpan) lowSpan.textContent = (stats.lowestScore == null ? 0 : stats.lowestScore);
     if (avgCorrectSpan) avgCorrectSpan.textContent = avgCorrect;
     if (avgIncorrectSpan) avgIncorrectSpan.textContent = avgIncorrect;
+// function renderStats() {
+//     const s = state.stats;
+//     const statsDiv = document.querySelector(".stats");
+
+//     let lines = statsDiv.querySelectorAll("small");
+//     lines[0].textContent = `Games played: ${s.gamesPlayed}`;
+//     lines[1].textContent = `Highest score: ${s.highestScore}`;
+//     lines[2].textContent = `Lowest score: ${s.lowestScore ?? 0}`;
+//     lines[3].textContent = `Average correct words guessed per game: ${s.gamesPlayed ? (s.totalCorrect / s.gamesPlayed).toFixed(2) : 0}`;
+//     lines[4].textContent = `Average incorrect words guessed per game: ${s.gamesPlayed ? (s.totalIncorrect / s.gamesPlayed).toFixed(2) : 0}`;
+}
+
+async function checkDictionaryWord(word) {
+    let response = await fetch(
+        "https://cs4640.cs.virginia.edu/homework/checkword.php",
+        {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ word })
+        }
+    );
+
+    return await response.json();
+}
+
+function validateLetters(guess) {
+    const available = [...state.currentGame.target];
+    for (let char of guess) {
+        let idx = available.indexOf(char);
+        if (idx === -1) return false;
+        available.splice(idx, 1);
+    }
+    return true;
 }
