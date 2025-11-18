@@ -44,5 +44,8 @@ function newGame(obj) {
 
 // render game helper
 function renderGame() {
-    document.querySelector()
+    
+    document.querySelector("h2").textContent = 
+        `Score: ${state.currentGame.score}`
+    
 }
