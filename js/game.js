@@ -171,6 +171,25 @@ function endGame(won) {
     }
 }
 
+function endGame(){
+    const g = state.currentGame;
+    const s = state.stats;
+
+    s.gamesPlayed++;
+    s.totalCorrect += g.guessedCorrect.length;
+    s.totalIncorrect += g.guessedWrong;
+
+    if (s.highestScore < g.score) s.highestScore = g.score;
+    if (s.lowestScore === null || g.score < s.lowestScore) {
+        s.lowestScore = g.score;
+    }
+
+    saveState();
+    renderStats();
+
+    alert("Game over. You found the 7-letter word!")
+}
+
 window.addEventListener("DOMContentLoaded", () => { 
     // new game button
     const newGameBtn = document.getElementById("newGameBtn");
@@ -219,46 +238,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
             if (!guess) return;
 
-            if (!validateLetters(guess)) {
-                state.currentGame.guessedWrong++;
-                renderGame();
-                saveState();
-                return;
-            }
-
-            // if it's exactly the 7-letter target word, treat as win
-            if (guess === state.currentGame.target) {
-                const stored = guess.toLowerCase();
-                if (!state.currentGame.guessedCorrect.includes(stored)) {
-                    state.currentGame.guessedCorrect.push(stored);
-                    state.currentGame.score += guess.length;
-                }
-                renderGame();
-                saveState();
-                endGame(true);
-                return;
-            }
-
-            const result = await checkDictionaryWord(guess.toLowerCase());
-
-            if (result.valid) {
-                if (!state.currentGame.guessedCorrect.includes(guess.toLowerCase())) {
-                    state.currentGame.guessedCorrect.push(guess.toLowerCase());
-                    state.currentGame.score += guess.length;
-                }
-            } else {
-                state.currentGame.guessedWrong++;
-            }
-            
-            renderGame();
-            saveState();
+            await handleGuess(guess);
         });
 
         const saved = localStorage.getItem("anagramState");
         if (saved) {
-            state = JSON.parse(saved);
+            const old = JSON.parse(saved);
+            state.stats = old.stats;
             renderStats();
-            renderGame();
         }
     }
 });
