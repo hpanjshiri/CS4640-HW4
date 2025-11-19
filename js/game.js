@@ -26,7 +26,6 @@ if (localStorage.getItem("anagramState")) {
     renderStats();
 }
 
-/* ----- small helper for the status text ----- */
 function setStatus(msg) {
     const p = document.getElementById("status");
     if (p) p.textContent = msg || "";
@@ -134,9 +133,57 @@ function validateLetters(guess) {
     return true;
 }
 
-/* ----- end game logic with win/lose flag and message ----- */
-function endGame(won) {
-    // avoid double-counting if game is already over
+async function handleGuess(guess) {
+    guess = guess.toUpperCase();
+
+    if (!state.currentGame.target || state.currentGame.isOver) {
+        setStatus(`Game is over. Click "Begin New Game" to play again.`);
+        return;
+    }
+
+    if (!validateLetters(guess)) {
+        state.currentGame.guessedWrong++;
+        setStatus("That word uses letters not in the puzzle.");
+        renderGame();
+        saveState();
+        return;
+    }
+
+    if (guess === state.currentGame.target) {
+        const stored = guess.toLowerCase();
+        if (!state.currentGame.guessedCorrect.includes(stored)) {
+            state.currentGame.guessedCorrect.push(stored);
+            state.currentGame.score += guess.length;
+        }
+
+        renderGame();
+        saveState();
+        endGame(true);  
+        return;
+    }
+
+    const result = await checkDictionaryWord(guess.toLowerCase());
+
+    if (result.valid) {
+        const stored = guess.toLowerCase();
+        if (!state.currentGame.guessedCorrect.includes(stored)) {
+            state.currentGame.guessedCorrect.push(stored);
+            state.currentGame.score += guess.length;
+            setStatus("Nice! Valid word.");
+        } else {
+            setStatus("You already found that word.");
+        }
+    } else {
+        state.currentGame.guessedWrong++;
+        setStatus("That word is not in the dictionary.");
+    }
+
+    renderGame();
+    saveState();
+}
+
+// end game function
+function endGame(won, showMessage = true) {
     if (!state.currentGame.target || state.currentGame.isOver) return;
 
     const g = state.currentGame;
@@ -158,37 +205,22 @@ function endGame(won) {
         }
     }
 
-    // mark game as over but keep board visible
     state.currentGame.isOver = true;
 
     saveState();
     renderStats();
 
-    if (won) {
-        setStatus(`You found the target word "${g.target}"! Click "Begin New Game" to play again.`);
+    if (showMessage) {
+        if (won) {
+            setStatus(`You found the target word "${g.target}"! Click "Begin New Game" to play again.`);
+        } else {
+            setStatus(`Game ended. Click "Begin New Game" to start a new game.`);
+        }
     } else {
-        setStatus(`Game ended. Click "Begin New Game" to start a new game.`);
+        setStatus("");
     }
 }
 
-function endGame(){
-    const g = state.currentGame;
-    const s = state.stats;
-
-    s.gamesPlayed++;
-    s.totalCorrect += g.guessedCorrect.length;
-    s.totalIncorrect += g.guessedWrong;
-
-    if (s.highestScore < g.score) s.highestScore = g.score;
-    if (s.lowestScore === null || g.score < s.lowestScore) {
-        s.lowestScore = g.score;
-    }
-
-    saveState();
-    renderStats();
-
-    alert("Game over. You found the 7-letter word!")
-}
 
 window.addEventListener("DOMContentLoaded", () => { 
     // new game button
@@ -199,9 +231,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
             const g = state.currentGame;
 
-            // if there was an in-progress game that isn't marked over yet, end it as a loss
             if (g.target && !g.isOver && (g.guessedCorrect.length > 0 || g.guessedWrong > 0 || g.score > 0)) {
-                endGame(false);
+                endGame(false, false);
             }
 
             getRandomWord(newGame);
@@ -212,7 +243,6 @@ window.addEventListener("DOMContentLoaded", () => {
     const shuffleBtn = document.getElementById("shuffleBtn");
     if (shuffleBtn) {
         shuffleBtn.addEventListener("click", () => {
-            // if game is over, don't allow more shuffles
             if (!state.currentGame.target || state.currentGame.isOver) {
                 setStatus(`Game is over. Click "Begin New Game" to play again.`);
                 return;
@@ -223,6 +253,7 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // guess button
     const guessForm = document.getElementById("guessForm");
     if (guessForm) {
         guessForm.addEventListener("submit", async (e) => {
@@ -230,7 +261,6 @@ window.addEventListener("DOMContentLoaded", () => {
             const guess = e.target.guess.value.trim().toUpperCase();
             e.target.guess.value = "";
 
-            // if the game is over, ignore guesses
             if (!state.currentGame.target || state.currentGame.isOver) {
                 setStatus(`Game is over. Click "Begin New Game" to play again.`);
                 return;
@@ -271,6 +301,6 @@ document.getElementById("clearHistoryBtn").addEventListener("click", () => {
     };
     renderGame();
 
-    setStatus(""); // clear any previous message
+    setStatus(""); 
     alert("History Cleared");
 });
